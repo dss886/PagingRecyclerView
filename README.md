@@ -136,9 +136,9 @@ recyclerView.setPageEnable(boolean header, boolean footer);
 
 ## Thanks
 
-This project is largely an external version of [nicolasjafelle's PagingListView](https://github.com/nicolasjafelle/PagingListView), which is no longer be maintained.
+1\. This project is largely an external version of [nicolasjafelle's PagingListView](https://github.com/nicolasjafelle/PagingListView), which is no longer be maintained.
 
-[cundong's HeaderAndFooterRecyclerView](https://github.com/cundong/HeaderAndFooterRecyclerView) also give a lot of inspiration to this project.
+2\. [cundong's HeaderAndFooterRecyclerView](https://github.com/cundong/HeaderAndFooterRecyclerView) also gives a lot of inspiration to this project.
 
 ## License
 
