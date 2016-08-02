@@ -4,7 +4,7 @@
 
 [简体中文版说明 >>>](/README_CN.md)
 
-A RecyclerView provides page loading and error retry with strong scalability of header and footer.
+A RecyclerView provides page loading and error retry with scalability of header and footer.
 
 ![Demo](/1.gif)
 
