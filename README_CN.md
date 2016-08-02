@@ -132,6 +132,12 @@ recyclerView.setFooter(new PagingItem(new FooterHolder(footer), new FooterPageab
 recyclerView.setPageEnable(boolean header, boolean footer);
 ~~~
 
+## 使用了自定义的LayoutManager
+
+本项目支持三种默认的LayoutManager（Linear、Gird和Staggered）。但如果你使用了自定义的LayoutManager，默认的OnScrollListener就无法自动检测到是否滑到了顶部或底部，你需要自己实现OnScrollListener然后添加到PagingRecyclerView中。
+
+更多信息请参考：[com/dss886/pagingrecyclerview/PagingScrollListener.java](https://github.com/dss886/PagingRecyclerView/blob/master/library/src/main/java/com/dss886/pagingrecyclerview/PagingScrollListener.java)
+
 ## 注意事项
 
 1\. 因为PagingRecyclerView使用了一个装饰类来包装你的adapter，所以`adapter.notifyDataSetChanged()`可能会没有效果，需要用`PagingRecyclerView.notifyDataSetChanged()`方法来代替。
