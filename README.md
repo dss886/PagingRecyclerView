@@ -132,6 +132,12 @@ By default the head paging is disable. If you want to change the pageablity of h
 recyclerView.setPageEnable(boolean header, boolean footer);
 ~~~
 
+## Custom LayoutManager
+
+This project support all three default LayoutManager(Linear, Grid and Staggered). But if you are using a custom LayoutManager, PagingRecyclerView will have no idea how the manager layout its children and can't detect when scolled to he top or the bottom. You need to impement your own OnScrollListener add add it to the PagingRecyclerView.
+
+See more detail at: [com/dss886/pagingrecyclerview/PagingScrollListener.java](https://github.com/dss886/PagingRecyclerView/blob/master/library/src/main/java/com/dss886/pagingrecyclerview/PagingScrollListener.java)
+
 ## Notice
 
 1\. As PagingRecyclerView using a decorator to wrap your adapter, `adapter.notifyDataSetChanged()` may not act as expected, you can use `PagingRecyclerView.notifyDataSetChanged()` instead.
