@@ -21,7 +21,7 @@ Add the dependency in the form:
 
 ~~~
 dependencies {
-	compile 'com.github.dss886:PagingRecyclerView:v0.1.0'
+	compile 'com.github.dss886:PagingRecyclerView:v0.1.1'
 }
 ~~~
 
@@ -58,7 +58,7 @@ recyclerView.setOnPagingListener(new PagingRecyclerView.OnPagingListener() {
 });
 ~~~
 
-4\. Update state of paging item when you finish your work or some exceptions occured:
+4\. Update state of paging item when you finished your work or some exceptions occured:
 
 ~~~java
 recyclerView.updateFooter(PagingItem.STATE_FINISH);
@@ -118,4 +118,42 @@ private class FooterPageable implements PagingItem.Pageable {
 ~~~java
 View footer = LayoutInflater.from(this).inflate(R.layout.item_paging, recyclerView, false);
 recyclerView.setFooter(new PagingItem(new FooterHolder(footer), new FooterPageable()));
+~~~
+
+## Header and Footer
+
+By default the head paging is disable. If you want to change the pageablity of header and footer, using:
+
+~~~java
+recyclerView.setPageEnable(boolean header, boolean footer);
+~~~
+
+## Notice
+
+1\. As PagingRecyclerView using a decorator to wrap your adapter, `adapter.notifyDataSetChanged()` may not act as expected, you can use `PagingRecyclerView.notifyDataSetChanged()` instead.
+
+2\. When header is showing, the return value of `ViewHolder.getAdapterPosition()` and `ViewHolder.getLayoutPosition()` has counted the header, use `PagingRecyclerView.getFixedPostion(int position)` to get its true position in inner dataset.
+
+## Thanks
+
+This project is largely an external version of [nicolasjafelle's PagingListView](https://github.com/nicolasjafelle/PagingListView), which is no longer be maintained.
+
+[cundong's HeaderAndFooterRecyclerView](https://github.com/cundong/HeaderAndFooterRecyclerView) also give a lot of inspiration to this project.
+
+## License
+
+~~~
+Copyright 2016 dss886
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ~~~
