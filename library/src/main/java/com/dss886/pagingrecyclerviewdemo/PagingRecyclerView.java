@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ViewTreeObserver;
 
 /**
  * Created by dss886 on 16/7/25.
@@ -29,7 +30,6 @@ public class PagingRecyclerView extends RecyclerView {
 
     public PagingRecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        addOnScrollListener(new PagingScrollListener());
     }
 
     @Override
@@ -65,6 +65,7 @@ public class PagingRecyclerView extends RecyclerView {
             throw new IllegalArgumentException("Please set adapter before setting OnPagingListener!");
         }
         mAdapter.setOnPagingListener(listener);
+        getViewTreeObserver().addOnGlobalLayoutListener(new FirstShowListener());
     }
 
     public void notifyDataSetChanged(){
@@ -95,6 +96,27 @@ public class PagingRecyclerView extends RecyclerView {
 
     public int getFixedPostion(int position) {
         return mAdapter.getInnerPosition(position);
+    }
+
+    /**
+     * OnScrollStateChanged will not be called when the first time PagingRecyclerView shows.
+     * We need to add a listener to detect this and call it manually.
+     */
+    private class FirstShowListener implements ViewTreeObserver.OnGlobalLayoutListener {
+        @Override
+        @SuppressWarnings("deprecation")
+        public void onGlobalLayout() {
+            int width = getWidth();
+            int height = getHeight();
+            if (width > 0 && height > 0) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+                mListener.onScrollStateChanged(PagingRecyclerView.this, getScrollState());
+            }
+        }
     }
 
     public interface OnPagingListener{

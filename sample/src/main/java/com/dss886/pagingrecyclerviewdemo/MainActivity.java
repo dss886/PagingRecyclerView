@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        recyclerView.updateHeader(PagingItem.STATE_PAGING);
     }
 
     private class FooterHolder extends RecyclerView.ViewHolder {
