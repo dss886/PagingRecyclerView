@@ -2,6 +2,8 @@
 
 [![](https://jitpack.io/v/dss886/PagingRecyclerView.svg)](https://jitpack.io/#dss886/PagingRecyclerView)
 
+![Demo](/1.gif)
+
 A RecyclerView provides page loading and error retry with strong scalability of header and footer.
 
 ## Download
