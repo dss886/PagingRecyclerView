@@ -134,15 +134,15 @@ recyclerView.setPageEnable(boolean header, boolean footer);
 
 ## 注意事项
 
-1\. 因为PagingRecyclerView用了一个装饰类来包装你的adapter，所以你的`adapter.notifyDataSetChanged()`可能会没有效果，需要用`PagingRecyclerView.notifyDataSetChanged()`方法来代替。
+1\. 因为PagingRecyclerView使用了一个装饰类来包装你的adapter，所以`adapter.notifyDataSetChanged()`可能会没有效果，需要用`PagingRecyclerView.notifyDataSetChanged()`方法来代替。
 
-2\. 当顶部加载的item正在显示时，`ViewHolder.getAdapterPosition()`和`ViewHolder.getLayoutPosition()`的返回值是计算header了的，如果这不是你想要的，使用`PagingRecyclerView.getFixedPostion(int position)`来得到这个item在你的adatper中的真正位置。
+2\. 当顶部加载的item正在显示时，`ViewHolder.getAdapterPosition()`和`ViewHolder.getLayoutPosition()`的返回值是计算header了的，如果这不是你想要的，可以使用`PagingRecyclerView.getFixedPostion(int position)`来得到这个item在你的adatper中的真正位置。
 
 ## Thanks
 
-1\. 本项目的基本思路源自于[nicolasjafelle 的 PagingListView](https://github.com/nicolasjafelle/PagingListView)，但是很遗憾的是作者不再维护了，也没有支持RecyclerView的打算，所以才有了这个项目。
+1\. 本项目的基本思路源自于[nicolasjafelle的PagingListView](https://github.com/nicolasjafelle/PagingListView)，但是遗憾的是作者不再进行维护了，也没有支持RecyclerView的打算，所以才有了这个项目。
 
-2\. [cundong 的 HeaderAndFooterRecyclerView](https://github.com/cundong/HeaderAndFooterRecyclerView)在接口设计和实现上也给了本项目很大的灵感。
+2\. [cundong的HeaderAndFooterRecyclerView](https://github.com/cundong/HeaderAndFooterRecyclerView)在接口设计和实现上也给了本项目很大的灵感。
 
 ## License
 
