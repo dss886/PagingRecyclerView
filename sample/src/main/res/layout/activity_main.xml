@@ -6,7 +6,7 @@
     android:background="#EEEEEE"
     tools:context="com.dss886.pagingrecyclerviewdemo.MainActivity">
 
-    <com.dss886.pagingrecyclerviewdemo.PagingRecyclerView
+    <com.dss886.pagingrecyclerview.PagingRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

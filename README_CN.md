@@ -25,7 +25,7 @@ allprojects {
 
 ~~~
 dependencies {
-	compile 'com.github.dss886:PagingRecyclerView:v0.1.1'
+	compile 'com.github.dss886:PagingRecyclerView:v0.1.2'
 }
 ~~~
 
@@ -34,7 +34,7 @@ dependencies {
 1\. 使用PagingRecyclerView替换原生的RecyclerView:
 
 ~~~xml
-<com.dss886.pagingrecyclerviewdemo.PagingRecyclerView
+<com.dss886.pagingrecyclerview.PagingRecyclerView
     android:id="@+id/recycler_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />

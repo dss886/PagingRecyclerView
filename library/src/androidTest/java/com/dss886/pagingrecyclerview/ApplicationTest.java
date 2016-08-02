@@ -1,4 +1,4 @@
-package com.dss886.pagingrecyclerviewdemo;
+package com.dss886.pagingrecyclerview;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -1,4 +1,4 @@
-package com.dss886.pagingrecyclerviewdemo;
+package com.dss886.pagingrecyclerview;
 
 import android.support.v7.widget.RecyclerView;
 

@@ -8,6 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.dss886.pagingrecyclerview.PagingAdapterDecorator;
+import com.dss886.pagingrecyclerview.PagingItem;
+import com.dss886.pagingrecyclerview.PagingRecyclerView;
+
 public class MainActivity extends AppCompatActivity {
 
     PagingRecyclerView recyclerView;
