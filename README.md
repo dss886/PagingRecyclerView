@@ -27,7 +27,7 @@ dependencies {
 
 ## Usage
 
-1.Using PagingRecyclerView to replace your origin RecyclerView:
+1\. Using PagingRecyclerView to replace your origin RecyclerView:
 
 ~~~xml
 <com.dss886.pagingrecyclerviewdemo.PagingRecyclerView
@@ -36,7 +36,7 @@ dependencies {
     android:layout_height="match_parent" />
 ~~~
 
-2.Using PagingAdapterDecorator to wrap your adapter before being set:
+2\. Using PagingAdapterDecorator to wrap your adapter before being set:
 
 ~~~java
 recyclerView = (PagingRecyclerView) findViewById(R.id.recycler_view);
@@ -45,7 +45,7 @@ recyclerView.setLayoutManager(new LinearLayoutManager(this));
 recyclerView.setAdapter(new PagingAdapterDecorator(this, adapter));
 ~~~
 
-3.Set OnPagingListener to specify actions when paging:
+3\. Set OnPagingListener to specify actions when paging:
 
 ~~~java
 recyclerView.setOnPagingListener(new PagingRecyclerView.OnPagingListener() {
@@ -58,7 +58,7 @@ recyclerView.setOnPagingListener(new PagingRecyclerView.OnPagingListener() {
 });
 ~~~
 
-4.Update state of paging item when you finish your work or some exceptions occured:
+4\. Update state of paging item when you finish your work or some exceptions occured:
 
 ~~~java
 recyclerView.updateFooter(PagingItem.STATE_FINISH);
@@ -67,7 +67,8 @@ recyclerView.updateFooter(PagingItem.STATE_ERROR);
 
 ## Custom Paging Items
 
-1. Define the ViewHolder of your paging item:
+1\. Define the ViewHolder of your paging item:
+
 ~~~java
 private class FooterHolder extends RecyclerView.ViewHolder {
     public View progress;
@@ -80,8 +81,11 @@ private class FooterHolder extends RecyclerView.ViewHolder {
         this.text = (TextView) itemView.findViewById(R.id.text);
     }
 }
+
 ~~~
-2. Implement PagingItem.Pageable to specify the appearance of items under different states:
+
+2\. Implement PagingItem.Pageable to specify the appearance of items under different states:
+
 ~~~java
 private class FooterPageable implements PagingItem.Pageable {
     @Override
@@ -108,7 +112,9 @@ private class FooterPageable implements PagingItem.Pageable {
     }
 }
 ~~~
-3. Create the PagingItem and set it to PagingRecyclerView:
+
+3\. Create the PagingItem and set it to PagingRecyclerView:
+
 ~~~java
 View footer = LayoutInflater.from(this).inflate(R.layout.item_paging, recyclerView, false);
 recyclerView.setFooter(new PagingItem(new FooterHolder(footer), new FooterPageable()));
