@@ -7,6 +7,8 @@
 一个支持分页加载和错误重试的RecyclerView，提供可扩展的header和footer。
 
 ![Demo](/1.gif)
+![Demo](/2.gif)
+![Demo](/3.gif)
 
 ## 下载
 
@@ -25,7 +27,7 @@ allprojects {
 
 ~~~
 dependencies {
-	compile 'com.github.dss886:PagingRecyclerView:v0.1.2'
+	compile 'com.github.dss886:PagingRecyclerView:v0.1.3'
 }
 ~~~
 

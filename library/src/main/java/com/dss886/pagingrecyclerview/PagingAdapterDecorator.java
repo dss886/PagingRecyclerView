@@ -2,12 +2,11 @@ package com.dss886.pagingrecyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import com.dss886.pagingrecyclerview.R;
 
 /**
  * Created by dss886 on 16/7/22.
@@ -158,15 +157,15 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
         onPagingListener.onPaging(recyclerView, direction);
     }
 
-    /** Private Methods **/
-
-    private boolean isHeader(int position) {
+    boolean isHeader(int position) {
         return mHeaderEnable && position == 0 && mHeaderState != STATE_HIDE;
     }
 
-    private boolean isFooter(int position) {
+    boolean isFooter(int position) {
         return mFooterEnable && position == getItemCount() - 1 && mFooterState != STATE_HIDE;
     }
+
+    /** Private Methods **/
 
     private class DefaultHolder extends RecyclerView.ViewHolder {
         public View progress;
@@ -177,6 +176,10 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
             this.progress = itemView.findViewById(R.id.progress);
             this.error = itemView.findViewById(R.id.error);
             this.text = (TextView) itemView.findViewById(R.id.text);
+            ViewGroup.LayoutParams lp = itemView.getLayoutParams();
+            if (lp != null && lp instanceof StaggeredGridLayoutManager.LayoutParams) {
+                ((StaggeredGridLayoutManager.LayoutParams) lp).setFullSpan(true);
+            }
         }
     }
 

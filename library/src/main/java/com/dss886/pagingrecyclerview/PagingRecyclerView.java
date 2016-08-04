@@ -2,6 +2,7 @@ package com.dss886.pagingrecyclerview;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -58,6 +59,13 @@ public class PagingRecyclerView extends RecyclerView {
         this.mAdapter = (PagingAdapterDecorator) adapter;
         this.mAdapter.setPagingRecyclerView(this);
         super.setAdapter(adapter);
+
+        if (getLayoutManager() instanceof GridLayoutManager) {
+            GridLayoutManager grid = (GridLayoutManager) getLayoutManager();
+            int spanCount = grid.getSpanCount();
+            GridLayoutManager.SpanSizeLookup lookup = grid.getSpanSizeLookup();
+            grid.setSpanSizeLookup(new PagingSpanSizeLookup(mAdapter, spanCount, lookup));
+        }
     }
 
     public void setOnPagingListener(OnPagingListener listener) {

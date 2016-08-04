@@ -7,6 +7,8 @@
 A RecyclerView provides page loading and error retry with scalability of header and footer.
 
 ![Demo](/1.gif)
+![Demo](/2.gif)
+![Demo](/3.gif)
 
 ## Download
 
@@ -25,7 +27,7 @@ Add the dependency in the form:
 
 ~~~
 dependencies {
-	compile 'com.github.dss886:PagingRecyclerView:v0.1.2'
+	compile 'com.github.dss886:PagingRecyclerView:v0.1.3'
 }
 ~~~
 
