@@ -7,7 +7,9 @@
 一个支持分页加载和错误重试的RecyclerView，提供可扩展的header和footer。
 
 ![Demo](/1.gif)
+
 ![Demo](/2.gif)
+
 ![Demo](/3.gif)
 
 ## 下载

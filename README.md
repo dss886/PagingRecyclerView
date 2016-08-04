@@ -7,7 +7,9 @@
 A RecyclerView provides page loading and error retry with scalability of header and footer.
 
 ![Demo](/1.gif)
+
 ![Demo](/2.gif)
+
 ![Demo](/3.gif)
 
 ## Download
