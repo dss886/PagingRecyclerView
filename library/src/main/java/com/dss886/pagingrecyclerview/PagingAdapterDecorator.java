@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 /**
  * Created by dss886 on 16/7/22.
@@ -243,6 +244,7 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
 
         ProgressBar progress;
         View error;
+        TextView text;
         int direction;
         int height;
 
@@ -251,6 +253,7 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
             this.direction = direction;
             this.progress = itemView.findViewById(R.id.progress);
             this.error = itemView.findViewById(R.id.error);
+            this.text = itemView.findViewById(R.id.text);
             ViewGroup.LayoutParams lp = itemView.getLayoutParams();
             if (lp != null && lp instanceof StaggeredGridLayoutManager.LayoutParams) {
                 ((StaggeredGridLayoutManager.LayoutParams) lp).setFullSpan(true);
@@ -268,6 +271,7 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
             itemView.setVisibility(View.VISIBLE);
             progress.setVisibility(View.VISIBLE);
             error.setVisibility(View.GONE);
+            text.setText(itemView.getContext().getString(R.string.paging_recycler_view_loading));
             itemView.setOnClickListener(null);
         }
 
@@ -276,6 +280,7 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
             itemView.setVisibility(View.VISIBLE);
             progress.setVisibility(View.GONE);
             error.setVisibility(View.VISIBLE);
+            text.setText(itemView.getContext().getString(R.string.paging_recycler_view_retry));
             itemView.setOnClickListener(v -> {
                 onPaging();
                 if (onPagingListener != null) {
