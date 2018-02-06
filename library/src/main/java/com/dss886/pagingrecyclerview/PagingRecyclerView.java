@@ -15,8 +15,8 @@ import android.view.ViewTreeObserver;
  */
 public class PagingRecyclerView extends RecyclerView {
 
-    public static final int DIRECTION_HEAD = 0;
-    public static final int DIRECTION_FOOT = 1;
+    public static final int HEAD = 1;
+    public static final int FOOT = 2;
 
     private PagingAdapterDecorator mAdapter;
     private OnScrollListener mListener;
@@ -53,19 +53,15 @@ public class PagingRecyclerView extends RecyclerView {
 
     @Override
     public void setAdapter(Adapter adapter) {
-        if (!(adapter instanceof PagingAdapterDecorator)) {
-            throw new IllegalArgumentException("You may need to use a PagingAdapterDecorator to wrap your adapter!");
-        }
-        this.mAdapter = (PagingAdapterDecorator) adapter;
-        this.mAdapter.setPagingRecyclerView(this);
-        super.setAdapter(adapter);
-
+        //noinspection unchecked
+        this.mAdapter = new PagingAdapterDecorator(getContext(), this, adapter);
         if (getLayoutManager() instanceof GridLayoutManager) {
             GridLayoutManager grid = (GridLayoutManager) getLayoutManager();
             int spanCount = grid.getSpanCount();
             GridLayoutManager.SpanSizeLookup lookup = grid.getSpanSizeLookup();
             grid.setSpanSizeLookup(new PagingSpanSizeLookup(mAdapter, spanCount, lookup));
         }
+        super.setAdapter(mAdapter);
     }
 
     public void setOnPagingListener(OnPagingListener listener) {
@@ -76,34 +72,33 @@ public class PagingRecyclerView extends RecyclerView {
         getViewTreeObserver().addOnGlobalLayoutListener(new FirstShowListener());
     }
 
-    public void notifyDataSetChanged(){
-        mAdapter.notifyDataSetChanged();
+    @Override
+    public void scrollToPosition(int position) {
+        if (mAdapter.isHeader(0)) {
+            position++;
+        }
+        super.scrollToPosition(position);
     }
 
     public void setPageEnable(boolean header, boolean footer) {
         mAdapter.setPageEnable(header, footer);
-    }
-
-    public void setHeader(PagingItem header) {
-        mAdapter.setHeader(header);
-    }
-
-    public void setFooter(PagingItem footer) {
-        mAdapter.setFooter(footer);
-    }
-
-    public void updateHeader(int state) {
-        mAdapter.updateHeader(state);
         mListener.onScrollStateChanged(this, getScrollState());
     }
 
-    public void updateFooter(int state) {
-        mAdapter.updateFooter(state);
-        mListener.onScrollStateChanged(this, getScrollState());
+    public void onPaging(int direction) {
+        mAdapter.onPaging(direction);
     }
 
-    public int getFixedPostion(int position) {
-        return mAdapter.getInnerPosition(position);
+    public void onFailure(int direction) {
+        mAdapter.onFailure(direction);
+    }
+
+    public void onNoMoreData(int direction) {
+        mAdapter.onNoMoreData(direction);
+    }
+
+    public int getFixedPosition(int position) {
+        return mAdapter.getFixedPosition(position);
     }
 
     /**
@@ -112,16 +107,11 @@ public class PagingRecyclerView extends RecyclerView {
      */
     private class FirstShowListener implements ViewTreeObserver.OnGlobalLayoutListener {
         @Override
-        @SuppressWarnings("deprecation")
         public void onGlobalLayout() {
             int width = getWidth();
             int height = getHeight();
             if (width > 0 && height > 0) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
+                getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 mListener.onScrollStateChanged(PagingRecyclerView.this, getScrollState());
             }
         }

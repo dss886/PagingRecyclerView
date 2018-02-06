@@ -15,12 +15,13 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private Context mContext;
     private int num = 15;
 
-    public MainRecyclerAdapter(Context context) {
+    MainRecyclerAdapter(Context context) {
         mContext = context;
     }
 
-    public void setNum(int num) {
+    void setNum(int num) {
         this.num = num;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -41,11 +42,11 @@ public class MainRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public class MainViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView textView;
+        TextView textView;
 
-        public MainViewHolder(View itemView) {
+        MainViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView.findViewById(R.id.text);
+            textView = itemView.findViewById(R.id.text);
         }
     }
 

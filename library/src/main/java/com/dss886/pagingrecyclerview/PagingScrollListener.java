@@ -47,10 +47,10 @@ public class PagingScrollListener extends RecyclerView.OnScrollListener {
             PagingAdapterDecorator adapter = (PagingAdapterDecorator) recyclerView.getAdapter();
             PagingRecyclerView pagingRecyclerView = (PagingRecyclerView) recyclerView;
             if (firstVisibleItemPosition <= 0) {
-                adapter.onScrolledToEdge(pagingRecyclerView, PagingRecyclerView.DIRECTION_HEAD);
+                adapter.onScrolledToEdge(pagingRecyclerView, PagingRecyclerView.HEAD);
             }
             if (lastVisibleItemPosition >= totalItemCount - 1) {
-                adapter.onScrolledToEdge(pagingRecyclerView, PagingRecyclerView.DIRECTION_FOOT);
+                adapter.onScrolledToEdge(pagingRecyclerView, PagingRecyclerView.FOOT);
             }
         }
     }

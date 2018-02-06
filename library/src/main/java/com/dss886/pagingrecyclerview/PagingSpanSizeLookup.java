@@ -11,7 +11,7 @@ public class PagingSpanSizeLookup extends GridLayoutManager.SpanSizeLookup {
     private int spanCount;
     private GridLayoutManager.SpanSizeLookup innerSizeLookup;
 
-    public PagingSpanSizeLookup(PagingAdapterDecorator adapter, int spanCount
+    PagingSpanSizeLookup(PagingAdapterDecorator adapter, int spanCount
             , GridLayoutManager.SpanSizeLookup innerSizeLookup) {
         this.adapter = adapter;
         this.spanCount = spanCount;
@@ -23,7 +23,7 @@ public class PagingSpanSizeLookup extends GridLayoutManager.SpanSizeLookup {
         if (adapter.isHeader(position) || adapter.isFooter(position)) {
             return spanCount;
         } else {
-            return innerSizeLookup.getSpanSize(position);
+            return innerSizeLookup.getSpanSize(adapter.getInnerPosition(position));
         }
     }
 }
