@@ -53,34 +53,57 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
 
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount) {
-                notifyItemRangeChanged(positionStart + 1, itemCount);
+                if (mHeaderEnable) {
+                    positionStart++;
+                }
+                notifyItemRangeChanged(positionStart, itemCount);
             }
 
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
-                notifyItemRangeChanged(positionStart + 1, itemCount, payload);
+                if (mHeaderEnable) {
+                    positionStart++;
+                }
+                notifyItemRangeChanged(positionStart, itemCount, payload);
             }
 
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                notifyItemRangeInserted(positionStart + 1, itemCount);
+                if (mHeaderEnable) {
+                    positionStart++;
+                }
+                notifyItemRangeInserted(positionStart, itemCount);
             }
 
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
-                notifyItemRangeRemoved(positionStart + 1, itemCount);
+                if (mHeaderEnable) {
+                    positionStart++;
+                }
+                notifyItemRangeRemoved(positionStart, itemCount);
             }
 
             @Override
             public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-                notifyItemRangeChanged(fromPosition + 1, toPosition + 1, itemCount);
+                if (mHeaderEnable) {
+                    fromPosition++;
+                    toPosition++;
+                }
+                notifyItemRangeChanged(fromPosition, toPosition, itemCount);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mAdapter.getItemCount() + 2;
+        int count = mAdapter.getItemCount();
+        if (mHeaderEnable) {
+            count++;
+        }
+        if (mFooterEnable) {
+            count++;
+        }
+        return count;
     }
 
     @Override
@@ -199,11 +222,17 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     int getInnerPosition(int position) {
-        return position - 1;
+        if (mHeaderEnable) {
+            return position - 1;
+        }
+        return position;
     }
 
     int getFixedPosition(int position) {
-        return position + 1;
+        if (mHeaderEnable) {
+            return position + 1;
+        }
+        return position;
     }
 
     void setOnPagingListener(PagingRecyclerView.OnPagingListener onPagingListener) {
@@ -231,11 +260,11 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     boolean isHeader(int position) {
-        return position == 0;
+        return mHeaderEnable && position == 0;
     }
 
     boolean isFooter(int position) {
-        return position == getItemCount() - 1;
+        return mFooterEnable && position == getItemCount() - 1;
     }
 
     /** Private Methods **/
