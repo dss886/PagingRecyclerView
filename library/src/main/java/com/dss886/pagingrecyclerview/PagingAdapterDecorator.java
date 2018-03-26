@@ -177,6 +177,17 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        if (!DefaultHolder.class.isInstance(holder)) {
+            if (mAdapter != null) {
+                mAdapter.onViewRecycled(holder);
+            }
+        } else {
+            super.onViewRecycled(holder);
+        }
+    }
+
     /** Friendly Methods **/
 
     void onPaging(int direction) {
