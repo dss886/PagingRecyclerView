@@ -29,7 +29,7 @@ allprojects {
 
 ~~~
 dependencies {
-	compile 'com.github.dss886:PagingRecyclerView:v0.1.3'
+	compile 'com.github.dss886:PagingRecyclerView:$(latest-version)'
 }
 ~~~
 
@@ -44,22 +44,13 @@ dependencies {
     android:layout_height="match_parent" />
 ~~~
 
-2\. 在设置适配器前使用PagingAdapterDecorator包装你的adapter：
-
-~~~java
-recyclerView = (PagingRecyclerView) findViewById(R.id.recycler_view);
-adapter = new YourRecyclerAdapter(this);
-recyclerView.setLayoutManager(new LinearLayoutManager(this));
-recyclerView.setAdapter(new PagingAdapterDecorator(this, adapter));
-~~~
-
-3\. 添加OnPagingListener来设置分页加载时要执行的动作：
+2\. 添加OnPagingListener来设置分页加载时要执行的动作：
 
 ~~~java
 recyclerView.setOnPagingListener(new PagingRecyclerView.OnPagingListener() {
     @Override
     public void onPaging(PagingRecyclerView view, int direction) {
-        if (direction == PagingRecyclerView.DIRECTION_FOOT) {
+        if (direction == PagingRecyclerView.FOOT) {
             // do your paging work
         }
     }
@@ -69,63 +60,9 @@ recyclerView.setOnPagingListener(new PagingRecyclerView.OnPagingListener() {
 4\. 当加载完成或发生错误时更新header或footer的状态：
 
 ~~~java
-recyclerView.updateFooter(PagingItem.STATE_FINISH);
-recyclerView.updateFooter(PagingItem.STATE_ERROR);
-~~~
-
-## 自定义 PagingItem
-
-1\. 定义你PagingItem的ViewHolder：
-
-~~~java
-private class FooterHolder extends RecyclerView.ViewHolder {
-    public View progress;
-    public View error;
-    public TextView text;
-    public FooterHolder(View itemView) {
-        super(itemView);
-        this.progress = itemView.findViewById(R.id.progress);
-        this.error = itemView.findViewById(R.id.error);
-        this.text = (TextView) itemView.findViewById(R.id.text);
-    }
-}
-
-~~~
-
-2\. 实现PagingItem.Pageable接口来在不同状态时显示不同的样式：
-
-~~~java
-private class FooterPageable implements PagingItem.Pageable {
-    @Override
-    public void onPaging(PagingItem item) {
-        FooterHolder holder = (FooterHolder) item.holder;
-        holder.progress.setVisibility(View.VISIBLE);
-        holder.error.setVisibility(View.GONE);
-        holder.text.setText("Loading...");
-        holder.itemView.setOnClickListener(null);
-    }
-
-    @Override
-    public void onError(final PagingItem item) {
-        final FooterHolder holder = (FooterHolder) item.holder;
-        holder.progress.setVisibility(View.GONE);
-        holder.error.setVisibility(View.VISIBLE);
-        holder.text.setText("Tap to retry");
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                recyclerView.updateFooter(PagingItem.STATE_PAGING);
-            }
-        });
-    }
-}
-~~~
-
-3\. 实例化PagingItem然后设置进PagingRecyclerView：
-
-~~~java
-View footer = LayoutInflater.from(this).inflate(R.layout.item_paging, recyclerView, false);
-recyclerView.setFooter(new PagingItem(new FooterHolder(footer), new FooterPageable()));
+recyclerView.onPaging(PagingRecyclerView.FOOT);
+recyclerView.onFailure(PagingRecyclerView.FOOT);
+recyclerView.onNoMoreData(PagingRecyclerView.FOOT);
 ~~~
 
 ## Header and Footer
@@ -157,7 +94,7 @@ recyclerView.setPageEnable(boolean header, boolean footer);
 ## License
 
 ~~~
-Copyright 2016 dss886
+Copyright 2018 dss886
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
