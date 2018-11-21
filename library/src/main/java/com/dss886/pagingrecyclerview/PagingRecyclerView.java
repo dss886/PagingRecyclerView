@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.ViewTreeObserver;
 
 /**
  * Created by dss886 on 16/7/25.
@@ -70,7 +69,6 @@ public class PagingRecyclerView extends RecyclerView {
             throw new IllegalArgumentException("Please set adapter before setting OnPagingListener!");
         }
         mAdapter.setOnPagingListener(listener);
-        getViewTreeObserver().addOnGlobalLayoutListener(new FirstShowListener());
     }
 
     @Override
@@ -100,22 +98,6 @@ public class PagingRecyclerView extends RecyclerView {
 
     public int getFixedPosition(int position) {
         return mAdapter.getFixedPosition(position);
-    }
-
-    /**
-     * OnScrollStateChanged will not be called when the first time PagingRecyclerView shows.
-     * We need to add a listener to detect this and call it manually.
-     */
-    private class FirstShowListener implements ViewTreeObserver.OnGlobalLayoutListener {
-        @Override
-        public void onGlobalLayout() {
-            int width = getWidth();
-            int height = getHeight();
-            if (width > 0 && height > 0) {
-                getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                mListener.onScrollStateChanged(PagingRecyclerView.this, getScrollState());
-            }
-        }
     }
 
     public interface OnPagingListener{
