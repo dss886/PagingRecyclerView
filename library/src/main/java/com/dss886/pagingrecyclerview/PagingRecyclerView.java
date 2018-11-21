@@ -1,6 +1,7 @@
 package com.dss886.pagingrecyclerview;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,7 +47,7 @@ public class PagingRecyclerView extends RecyclerView {
     }
 
     @Override
-    public void addOnScrollListener(OnScrollListener listener) {
+    public void addOnScrollListener(@NonNull OnScrollListener listener) {
         super.addOnScrollListener(listener);
         mListener = listener;
     }
@@ -120,4 +121,5 @@ public class PagingRecyclerView extends RecyclerView {
     public interface OnPagingListener{
         void onPaging(PagingRecyclerView view, int direction);
     }
+
 }

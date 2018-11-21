@@ -1,5 +1,6 @@
 package com.dss886.pagingrecyclerview;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -17,7 +18,7 @@ public class PagingScrollListener extends RecyclerView.OnScrollListener {
     private int lastVisibleItemPosition;
 
     @Override
-    public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
         // This listener will be used only in the case of LinearLayoutManager and
         // StaggeredGridLayoutManager, where GridLayoutManager is a subclass of LinearLayoutManager.
@@ -28,29 +29,35 @@ public class PagingScrollListener extends RecyclerView.OnScrollListener {
             firstVisibleItemPosition = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
         } else {
             StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
-            if (staggerFirst == null) staggerFirst = new int[staggeredGridLayoutManager.getSpanCount()];
-            if (staggerLast == null) staggerLast = new int[staggeredGridLayoutManager.getSpanCount()];
-            staggeredGridLayoutManager.findFirstVisibleItemPositions(staggerFirst);
-            staggeredGridLayoutManager.findLastVisibleItemPositions(staggerLast);
-            firstVisibleItemPosition = getTargetPosition(staggerFirst, true);
-            lastVisibleItemPosition = getTargetPosition(staggerLast, false);
+            if (staggeredGridLayoutManager != null) {
+                if (staggerFirst == null) staggerFirst = new int[staggeredGridLayoutManager.getSpanCount()];
+                if (staggerLast == null) staggerLast = new int[staggeredGridLayoutManager.getSpanCount()];
+                staggeredGridLayoutManager.findFirstVisibleItemPositions(staggerFirst);
+                staggeredGridLayoutManager.findLastVisibleItemPositions(staggerLast);
+                firstVisibleItemPosition = getTargetPosition(staggerFirst, true);
+                lastVisibleItemPosition = getTargetPosition(staggerLast, false);
+            }
         }
     }
 
     @Override
-    public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-        int visibleItemCount = layoutManager.getChildCount();
-        int totalItemCount = layoutManager.getItemCount();
-        if (visibleItemCount > 0 && newState == RecyclerView.SCROLL_STATE_IDLE) {
-            PagingAdapterDecorator adapter = (PagingAdapterDecorator) recyclerView.getAdapter();
-            PagingRecyclerView pagingRecyclerView = (PagingRecyclerView) recyclerView;
-            if (firstVisibleItemPosition <= 0) {
-                adapter.onScrolledToEdge(pagingRecyclerView, PagingRecyclerView.HEAD);
-            }
-            if (lastVisibleItemPosition >= totalItemCount - 1) {
-                adapter.onScrolledToEdge(pagingRecyclerView, PagingRecyclerView.FOOT);
+        if (layoutManager != null) {
+            int visibleItemCount = layoutManager.getChildCount();
+            int totalItemCount = layoutManager.getItemCount();
+            if (visibleItemCount > 0 && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                PagingAdapterDecorator adapter = (PagingAdapterDecorator) recyclerView.getAdapter();
+                PagingRecyclerView pagingRecyclerView = (PagingRecyclerView) recyclerView;
+                if (adapter != null) {
+                    if (firstVisibleItemPosition <= 0) {
+                        adapter.onScrolledToEdge(pagingRecyclerView, PagingRecyclerView.HEAD);
+                    }
+                    if (lastVisibleItemPosition >= totalItemCount - 1) {
+                        adapter.onScrolledToEdge(pagingRecyclerView, PagingRecyclerView.FOOT);
+                    }
+                }
             }
         }
     }

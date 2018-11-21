@@ -1,6 +1,7 @@
 package com.dss886.pagingrecyclerview;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -12,7 +13,7 @@ import android.widget.TextView;
 /**
  * Created by dss886 on 16/7/22.
  */
-public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     // Some complex code of types to avoid conflicting with subclasses
     private static final int VIEW_TYPE_HEADER = 1235234534;
@@ -113,8 +114,9 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
         return mAdapter.getItemViewType(getInnerPosition(position));
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view;
         switch (viewType) {
@@ -132,7 +134,7 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     @Override
-    public final void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public final void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         // In case STATE_HIDE this method will not be invoked.
         if (isHeader(position)) {
             if (!mHeaderEnable || mHeaderState == STATE_HIDE || mAdapter.getItemCount() == 0) {
@@ -156,13 +158,13 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mAdapter.onAttachedToRecyclerView(recyclerView);
     }
 
     @Override
-    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         if (!(holder instanceof DefaultHolder)) {
             mAdapter.onViewAttachedToWindow(holder);
@@ -170,7 +172,7 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     @Override
-    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
+    public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
         if (!(holder instanceof DefaultHolder)) {
             mAdapter.onViewDetachedFromWindow(holder);
@@ -178,7 +180,7 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     @Override
-    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         if (!DefaultHolder.class.isInstance(holder)) {
             if (mAdapter != null) {
                 mAdapter.onViewRecycled(holder);
@@ -295,7 +297,7 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
             this.error = itemView.findViewById(R.id.error);
             this.text = itemView.findViewById(R.id.text);
             ViewGroup.LayoutParams lp = itemView.getLayoutParams();
-            if (lp != null && lp instanceof StaggeredGridLayoutManager.LayoutParams) {
+            if (lp instanceof StaggeredGridLayoutManager.LayoutParams) {
                 ((StaggeredGridLayoutManager.LayoutParams) lp).setFullSpan(true);
             }
             height = dp2Px(itemView.getContext(), 56);
@@ -321,10 +323,13 @@ public class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.Vi
             progress.setVisibility(View.GONE);
             error.setVisibility(View.VISIBLE);
             text.setText(itemView.getContext().getString(R.string.paging_recycler_view_retry));
-            itemView.setOnClickListener(v -> {
-                onPaging();
-                if (onPagingListener != null) {
-                    onPagingListener.onPaging(mRecyclerView, direction);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onPaging();
+                    if (onPagingListener != null) {
+                        onPagingListener.onPaging(mRecyclerView, direction);
+                    }
                 }
             });
         }
