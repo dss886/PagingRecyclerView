@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by dss886 on 16/7/22.
  */
@@ -135,6 +138,11 @@ class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public final void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        onBindViewHolder(holder, position, new ArrayList<>());
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, @NonNull List<Object> payloads) {
         // In case STATE_HIDE this method will not be invoked.
         if (isHeader(position)) {
             if (!mHeaderEnable || mHeaderState == STATE_HIDE || mAdapter.getItemCount() == 0) {
@@ -153,7 +161,7 @@ class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 mFooter.onPaging();
             }
         } else {
-            mAdapter.onBindViewHolder(holder, getInnerPosition(position));
+            mAdapter.onBindViewHolder(holder, getInnerPosition(position), payloads);
         }
     }
 
