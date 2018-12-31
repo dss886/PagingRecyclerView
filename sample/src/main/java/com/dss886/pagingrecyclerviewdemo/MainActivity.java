@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
                     if (!testError) {
                         recyclerView.onFailure(direction);
                         testError = true;
+                    } else if (adapter.getItemCount() >= 30) {
+                        recyclerView.onNoMoreData(direction);
                     } else {
                         adapter.setNum(adapter.getItemCount() + 5);
                         recyclerView.onPaging(direction);

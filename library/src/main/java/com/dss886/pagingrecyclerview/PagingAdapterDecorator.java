@@ -3,12 +3,8 @@ package com.dss886.pagingrecyclerview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,17 +19,18 @@ class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private static final int VIEW_TYPE_FOOTER = 2135123453;
 
     private static final int STATE_HIDE = 0;
-    private static final int STATE_IDLE = 1;
-    private static final int STATE_PAGING = 2;
-    private static final int STATE_ERROR = 3;
+    private static final int STATE_PAGING = 1;
+    private static final int STATE_LOADING = 2;
+    private static final int STATE_NO_MORE_DATA = 3;
+    private static final int STATE_ERROR = 4;
 
     private boolean mHeaderEnable = false;
     private boolean mFooterEnable = true;
     private int mHeaderState = STATE_HIDE;
-    private int mFooterState = STATE_IDLE;
+    private int mFooterState = STATE_PAGING;
 
-    private DefaultHolder mHeader;
-    private DefaultHolder mFooter;
+    private AbsPagingViewHolder mHeader;
+    private AbsPagingViewHolder mFooter;
 
     private Context mContext;
     private PagingRecyclerView mRecyclerView;
@@ -121,15 +118,12 @@ class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view;
         switch (viewType) {
             case VIEW_TYPE_HEADER:
-                view = inflater.inflate(R.layout.paging_recycler_view_default_item, parent, false);
-                mHeader = new DefaultHolder(view, PagingRecyclerView.HEAD);
+                mHeader = mRecyclerView.createPagingViewHolder(inflater, parent, PagingRecyclerView.HEAD, onPagingListener);
                 return mHeader;
             case VIEW_TYPE_FOOTER:
-                view = inflater.inflate(R.layout.paging_recycler_view_default_item, parent, false);
-                mFooter = new DefaultHolder(view, PagingRecyclerView.FOOT);
+                mFooter = mRecyclerView.createPagingViewHolder(inflater, parent, PagingRecyclerView.FOOT, onPagingListener);
                 return mFooter;
             default:
                 return mAdapter.onCreateViewHolder(parent, viewType);
@@ -147,18 +141,26 @@ class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (isHeader(position)) {
             if (!mHeaderEnable || mHeaderState == STATE_HIDE || mAdapter.getItemCount() == 0) {
                 mHeader.onHide();
+            } else if (mHeaderState == STATE_NO_MORE_DATA) {
+                mHeader.onNoMoreData();
             } else if (mHeaderState == STATE_ERROR) {
                 mHeader.onError();
+            } else if (mHeaderState == STATE_PAGING) {
+                mFooter.onPaging();
             } else {
-                mHeader.onPaging();
+                mHeader.onLoading();
             }
         } else if (isFooter(position)) {
             if (!mFooterEnable || mFooterState == STATE_HIDE || mAdapter.getItemCount() == 0) {
                 mFooter.onHide();
+            } else if (mFooterState == STATE_NO_MORE_DATA) {
+                mFooter.onNoMoreData();
             } else if (mFooterState == STATE_ERROR) {
                 mFooter.onError();
-            } else {
+            } else if (mFooterState == STATE_PAGING) {
                 mFooter.onPaging();
+            } else {
+                mFooter.onLoading();
             }
         } else {
             mAdapter.onBindViewHolder(holder, getInnerPosition(position), payloads);
@@ -174,7 +176,7 @@ class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        if (!(holder instanceof DefaultHolder)) {
+        if (!(holder instanceof AbsPagingViewHolder)) {
             mAdapter.onViewAttachedToWindow(holder);
         }
     }
@@ -182,14 +184,14 @@ class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        if (!(holder instanceof DefaultHolder)) {
+        if (!(holder instanceof AbsPagingViewHolder)) {
             mAdapter.onViewDetachedFromWindow(holder);
         }
     }
 
     @Override
     public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
-        if (!DefaultHolder.class.isInstance(holder)) {
+        if (!AbsPagingViewHolder.class.isInstance(holder)) {
             if (mAdapter != null) {
                 mAdapter.onViewRecycled(holder);
             }
@@ -202,12 +204,12 @@ class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     void onPaging(int direction) {
         if (direction == PagingRecyclerView.HEAD) {
-            mHeaderState = STATE_IDLE;
+            mHeaderState = STATE_PAGING;
             if (mHeader != null) {
                 mHeader.onPaging();
             }
         } else if (direction == PagingRecyclerView.FOOT) {
-            mFooterState = STATE_IDLE;
+            mFooterState = STATE_PAGING;
             if (mFooter != null) {
                 mFooter.onPaging();
             }
@@ -230,11 +232,39 @@ class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     void onNoMoreData(int direction) {
         if (direction == PagingRecyclerView.HEAD) {
+            mHeaderState = STATE_NO_MORE_DATA;
+            if (mHeader != null) {
+                mHeader.onNoMoreData();
+            }
+        } else if (direction == PagingRecyclerView.FOOT) {
+            mFooterState = STATE_NO_MORE_DATA;
+            if (mFooter != null) {
+                mFooter.onNoMoreData();
+            }
+        }
+    }
+
+    void onLoading(int direction) {
+        if (direction == PagingRecyclerView.HEAD) {
+            mHeaderState = STATE_LOADING;
+            if (mHeader != null) {
+                mHeader.onLoading();
+            }
+        }else if (direction == PagingRecyclerView.FOOT) {
+            mFooterState = STATE_LOADING;
+            if (mFooter != null) {
+                mFooter.onLoading();
+            }
+        }
+    }
+
+    void onHide(int direction) {
+        if (direction == PagingRecyclerView.HEAD) {
             mHeaderState = STATE_HIDE;
             if (mHeader != null) {
                 mHeader.onHide();
             }
-        } else if (direction == PagingRecyclerView.FOOT) {
+        }else if (direction == PagingRecyclerView.FOOT) {
             mFooterState = STATE_HIDE;
             if (mFooter != null) {
                 mFooter.onHide();
@@ -262,18 +292,20 @@ class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     void setPageEnable(boolean header, boolean footer) {
         this.mHeaderEnable = header;
-        this.mHeaderState = header ? STATE_IDLE : STATE_HIDE;
+        this.mHeaderState = header ? STATE_PAGING : STATE_HIDE;
         this.mFooterEnable = footer;
-        this.mFooterState = footer ? STATE_IDLE : STATE_HIDE;
+        this.mFooterState = footer ? STATE_PAGING : STATE_HIDE;
     }
 
     void onScrolledToEdge(PagingRecyclerView recyclerView, int direction) {
         if (direction == PagingRecyclerView.HEAD) {
-            if (!mHeaderEnable || mHeaderState != STATE_IDLE) return;
-            mHeaderState = STATE_PAGING;
+            if (!mHeaderEnable || mHeaderState != STATE_PAGING) return;
+            mHeaderState = STATE_LOADING;
+            if (mHeader != null) mHeader.onLoading();
         } else if (direction == PagingRecyclerView.FOOT){
-            if (!mFooterEnable || mFooterState != STATE_IDLE) return;
-            mFooterState = STATE_PAGING;
+            if (!mFooterEnable || mFooterState != STATE_PAGING) return;
+            mFooterState = STATE_LOADING;
+            if (mFooter != null) mFooter.onLoading();
         }
         if (onPagingListener != null) {
             onPagingListener.onPaging(recyclerView, direction);
@@ -286,75 +318,6 @@ class PagingAdapterDecorator extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     boolean isFooter(int position) {
         return mFooterEnable && position == getItemCount() - 1;
-    }
-
-    /** Private Methods **/
-
-    private class DefaultHolder extends RecyclerView.ViewHolder {
-
-        ProgressBar progress;
-        View error;
-        TextView text;
-        int direction;
-        int height;
-
-        DefaultHolder(View itemView, int direction) {
-            super(itemView);
-            this.direction = direction;
-            this.progress = itemView.findViewById(R.id.progress);
-            this.error = itemView.findViewById(R.id.error);
-            this.text = itemView.findViewById(R.id.text);
-            ViewGroup.LayoutParams lp = itemView.getLayoutParams();
-            if (lp instanceof StaggeredGridLayoutManager.LayoutParams) {
-                ((StaggeredGridLayoutManager.LayoutParams) lp).setFullSpan(true);
-            }
-            height = dp2Px(itemView.getContext(), 56);
-        }
-
-        void onHide() {
-            setHeight(itemView, 0);
-            itemView.setVisibility(View.GONE);
-        }
-
-        void onPaging() {
-            setHeight(itemView, height);
-            itemView.setVisibility(View.VISIBLE);
-            progress.setVisibility(View.VISIBLE);
-            error.setVisibility(View.GONE);
-            text.setText(itemView.getContext().getString(R.string.paging_recycler_view_loading));
-            itemView.setOnClickListener(null);
-        }
-
-        void onError() {
-            setHeight(itemView, height);
-            itemView.setVisibility(View.VISIBLE);
-            progress.setVisibility(View.GONE);
-            error.setVisibility(View.VISIBLE);
-            text.setText(itemView.getContext().getString(R.string.paging_recycler_view_retry));
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onPaging();
-                    if (onPagingListener != null) {
-                        onPagingListener.onPaging(mRecyclerView, direction);
-                    }
-                }
-            });
-        }
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private static int dp2Px(Context context, float dp) {
-        float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dp * scale + 0.5F);
-    }
-
-    private static void setHeight(View view, int h) {
-        ViewGroup.LayoutParams params = view.getLayoutParams();
-        if(params != null && (params.height != h)) {
-            params.height = h;
-            view.setLayoutParams(params);
-        }
     }
 
 }

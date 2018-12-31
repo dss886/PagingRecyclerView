@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="paging_recycler_view_loading">Loading…</string>
+    <string name="paging_recycler_view_no_more_data">No More Data</string>
     <string name="paging_recycler_view_retry">Loading error, tap to retry</string>
 </resources>

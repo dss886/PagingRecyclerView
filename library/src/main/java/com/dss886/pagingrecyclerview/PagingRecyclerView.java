@@ -9,6 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Created by dss886 on 16/7/25.
@@ -19,7 +22,8 @@ public class PagingRecyclerView extends RecyclerView {
     public static final int FOOT = 2;
 
     private PagingAdapterDecorator mAdapter;
-    private OnScrollListener mListener;
+    private PagingScrollListener mInnerScrollListener;
+    private OnScrollListener mScrollListener;
 
     public PagingRecyclerView(Context context) {
         super(context);
@@ -38,7 +42,7 @@ public class PagingRecyclerView extends RecyclerView {
         boolean supportLayoutManager = layout instanceof LinearLayoutManager
                 || layout instanceof StaggeredGridLayoutManager;
         if (supportLayoutManager) {
-            addOnScrollListener(new PagingScrollListener());
+            addOnScrollListener(mInnerScrollListener = new PagingScrollListener(mAdapter));
         } else {
             Log.w("PagingRecyclerView", "You are using a custom LayoutManager and OnScrollListener cannot be set automatically, you need to implement and add it by yourself.");
         }
@@ -48,7 +52,7 @@ public class PagingRecyclerView extends RecyclerView {
     @Override
     public void addOnScrollListener(@NonNull OnScrollListener listener) {
         super.addOnScrollListener(listener);
-        mListener = listener;
+        mScrollListener = listener;
     }
 
     @Override
@@ -60,6 +64,9 @@ public class PagingRecyclerView extends RecyclerView {
             int spanCount = grid.getSpanCount();
             GridLayoutManager.SpanSizeLookup lookup = grid.getSpanSizeLookup();
             grid.setSpanSizeLookup(new PagingSpanSizeLookup(mAdapter, spanCount, lookup));
+        }
+        if (mInnerScrollListener != null) {
+            mInnerScrollListener.setAdapter(mAdapter);
         }
         super.setAdapter(mAdapter);
     }
@@ -81,7 +88,15 @@ public class PagingRecyclerView extends RecyclerView {
 
     public void setPageEnable(boolean header, boolean footer) {
         mAdapter.setPageEnable(header, footer);
-        mListener.onScrollStateChanged(this, getScrollState());
+        mScrollListener.onScrollStateChanged(this, getScrollState());
+    }
+
+    /**
+     * Override this method to custom your own paging item
+     */
+    protected AbsPagingViewHolder createPagingViewHolder(LayoutInflater inflater, ViewGroup parent, int direction, PagingRecyclerView.OnPagingListener pagingListener) {
+        View view = inflater.inflate(R.layout.paging_recycler_view_default_item, parent, false);
+        return new DefaultPagingViewHolder(view, direction, this, pagingListener);
     }
 
     public void onPaging(int direction) {
@@ -96,11 +111,19 @@ public class PagingRecyclerView extends RecyclerView {
         mAdapter.onNoMoreData(direction);
     }
 
+    public void onHide(int direction) {
+        mAdapter.onHide(direction);
+    }
+
+    public void onLoading(int direction) {
+        mAdapter.onLoading(direction);
+    }
+
     public int getFixedPosition(int position) {
         return mAdapter.getFixedPosition(position);
     }
 
-    public interface OnPagingListener{
+    public interface OnPagingListener {
         void onPaging(PagingRecyclerView view, int direction);
     }
 
