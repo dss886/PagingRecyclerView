@@ -73,6 +73,18 @@ By default the head paging is disable. If you want to change the pageablity of h
 recyclerView.setPageEnable(boolean header, boolean footer);
 ~~~
 
+If want to custom Header and Footer, inherit PagingRecyclerView and override the `createPagingViewHolder` method:
+
+~~~java
+/**
+ * Override this method to custom your own paging item
+ */
+protected AbsPagingViewHolder createPagingViewHolder(LayoutInflater inflater, ViewGroup parent, int direction, PagingRecyclerView.OnPagingListener pagingListener) {
+    View view = inflater.inflate(R.layout.paging_recycler_view_default_item, parent, false);
+    return new DefaultPagingViewHolder(view, direction, this, pagingListener);
+}
+~~~
+
 ## Custom LayoutManager
 
 This project support all three default LayoutManager(Linear, Grid and Staggered). But if you are using a custom LayoutManager, PagingRecyclerView will have no idea how the manager layout its children and can't detect when scolled to he top or the bottom. You need to impement your own OnScrollListener add add it to the PagingRecyclerView.

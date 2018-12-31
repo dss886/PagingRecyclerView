@@ -73,6 +73,18 @@ recyclerView.onNoMoreData(PagingRecyclerView.FOOT);
 recyclerView.setPageEnable(boolean header, boolean footer);
 ~~~
 
+如果想要自定义Header and Footer，继承PagingRecyclerView并覆写`createPagingViewHolder`方法：
+
+~~~java
+/**
+ * Override this method to custom your own paging item
+ */
+protected AbsPagingViewHolder createPagingViewHolder(LayoutInflater inflater, ViewGroup parent, int direction, PagingRecyclerView.OnPagingListener pagingListener) {
+    View view = inflater.inflate(R.layout.paging_recycler_view_default_item, parent, false);
+    return new DefaultPagingViewHolder(view, direction, this, pagingListener);
+}
+~~~
+
 ## 使用了自定义的LayoutManager
 
 本项目支持三种默认的LayoutManager（Linear、Gird和Staggered）。但如果你使用了自定义的LayoutManager，默认的OnScrollListener就无法自动检测到是否滑到了顶部或底部，你需要自己实现OnScrollListener然后添加到PagingRecyclerView中。
