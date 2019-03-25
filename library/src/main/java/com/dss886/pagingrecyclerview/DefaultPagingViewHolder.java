@@ -20,9 +20,10 @@ public class DefaultPagingViewHolder extends AbsPagingViewHolder {
     private TextView text;
     private int height;
 
-    DefaultPagingViewHolder(View itemView, int direction,
-                            PagingRecyclerView recyclerView,
-                            PagingRecyclerView.OnPagingListener pagingListener) {
+    @SuppressWarnings("WeakerAccess")
+    public DefaultPagingViewHolder(View itemView, int direction,
+                                   PagingRecyclerView recyclerView,
+                                   PagingRecyclerView.OnPagingListener pagingListener) {
         super(itemView, direction);
         this.mRecyclerView = recyclerView;
         this.mPagingListener = pagingListener;
